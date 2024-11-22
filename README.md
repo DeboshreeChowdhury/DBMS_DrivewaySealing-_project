@@ -36,8 +36,8 @@ This project is a web-based database management system for a driveway-sealing co
    - mock-data.sql     # Sample data for testing
 
 ## Team Members
-- **Deboshree Chowdhury** (hg9512): Focus on [e.g., Database Design, Backend Development].
-- **Syed Ali** (Partner's Access ID): Focus on [e.g., Frontend Development, Queries].
+- **Deboshree Chowdhury** (hg9512)
+- **Syed Ali** ()
 
 ## Key Milestones
 1. **Week 1-2**: Create E-R diagram and database schema.
