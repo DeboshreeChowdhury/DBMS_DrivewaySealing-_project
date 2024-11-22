@@ -1,55 +1,54 @@
-# Driveway Sealing Database Management System
+Driveway Sealing Database Management System
+Project Overview
+This project is a web-based database management system for a driveway-sealing contractor, David Smith. It facilitates client registration, driveway-sealing quote requests, order management, and billing workflows, including negotiation loops for both quotes and bills. The system features separate dashboards for David Smith and clients, offering an intuitive interface to manage operations seamlessly.
 
-## Project Overview
-This project is a web-based database management system for a driveway-sealing contractor, **David Smith**. It handles client registration, quote requests, order processing, and billing workflows, including negotiation loops for quotes and bills. The system includes dashboards for both David Smith and clients, providing an intuitive interface to manage operations.
-
-## Features
-- **Client Dashboard**:
-  - Register as a new client.
-  - Submit driveway sealing quote requests.
-  - View and respond to quotes, orders, and bills.
-- **David Smith Dashboard**:
-  - Review and respond to quote requests.
-  - Manage orders and billing workflows.
-  - Generate revenue reports for specific periods.
-- **Reporting**:
-  - Identify big clients, difficult clients, overdue bills, and more through SQL queries.
-
-## Technologies
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Python (Flask/Django), Node.js, or PHP (to be determined)
-- **Database**: MySQL
-- **Version Control**: Git and GitHub
-
-## Project Structure
+Features
+Client Dashboard:
+Register as a new client.
+Submit driveway-sealing quote requests, including driveway details and images.
+View and respond to quotes, orders, and bills.
+Dispute or pay bills directly through the dashboard.
+David Smith Dashboard:
+Review and respond to incoming quote requests.
+Manage orders and schedule driveway-sealing services.
+Handle billing workflows, including disputes and adjustments.
+Generate revenue and client activity reports for specific periods.
+Reporting:
+Identify:
+Big clients (highest number of completed orders).
+Difficult clients (multiple quote submissions with no follow-up).
+Overdue bills and bad clients.
+Quotes agreed upon this month.
+Largest driveway worked on.
+Technologies
+Frontend: HTML, CSS, JavaScript
+Backend: Node.js (Express.js)
+Database: MySQL
+Version Control: Git and GitHub
+Testing Tools: Postman, MySQL Workbench
+Project Structure
+bash
+Copy code
 /db
-   - schema.sql        #  database schema
-   - queries.sql       # SQL queries for reports
+   - schema.sql        # Database schema
+   - queries.sql       # SQL queries for reporting
+   - mock-data.sql     # Sample data for testing
 /src
-   /backend            # Backend code
-   /frontend           # Frontend code
+   /backend
+      - db_config.js   # Database connection setup
+      - model.js       # Database queries and operations
+      - routes.js      # API endpoints
+      - server.js      # Express server setup
+   /frontend
+      - index.html          # Landing page
+      - admin_dashboard.html # Admin dashboard
+      - client_dashboard.html # Client dashboard
+      - style.css           # Shared styles
+      - scripts.js          # Dynamic JavaScript functionality
 /docs
    - er-diagram.png    # E-R diagram
-   - user-manual.pdf   # Optional for honors
-   - developer-manual.pdf # Optional for honors
-/test
-   - mock-data.sql     # Sample data for testing
-
-## Team Members
-- **Deboshree Chowdhury** (hg9512)
-- **Syed Ali** 
-
-## Key Milestones
-1. **Week 1-2**: Create E-R diagram and database schema.
-2. **Week 3-4**: Implement client registration and quote workflows.
-3. **Week 5-6**: Build dashboards for David Smith and clients.
-4. **Week 7**: Write SQL queries for reports and test functionalities.
-5. **Week 8**: Final testing, documentation, and video recording.
-
-## Instructions to Run
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo-url
-   cd DrivewaySealingDBProject
-
-
+   - user-manual.pdf   # User guide (optional for honors students)
+   - developer-manual.pdf # Developer documentation (optional for honors students)
+Team Members
+Deboshree Chowdhury (hg9512)
+Syed Ali
