@@ -1,12 +1,12 @@
 ## Driveway Sealing Database Management System
-# Project Overview
+Project Overview
 #This project is a web-based database management system designed for a driveway-sealing contractor, David Smith. The system facilitates:
 
-#Client registration.
-#Driveway-sealing quote requests.
-#Order management and billing workflows.
-#Negotiation loops for quotes and bills.
-#The application includes intuitive dashboards for both clients and David Smith, #providing tools to manage operations effectively.
+##Client registration.
+Driveway-sealing quote requests.
+Order management and billing workflows.
+Negotiation loops for quotes and bills.
+The application includes intuitive dashboards for both clients and David Smith, #providing tools to manage operations effectively.
 
 ##Features
 Client Dashboard:
