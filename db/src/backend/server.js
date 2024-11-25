@@ -24,12 +24,12 @@ app.use((req, res, next) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Global error handler:', err.stack);
     res.status(500).json({ error: 'Something went wrong. Please try again later.' });
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; // Default to 5000 if PORT is not specified
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

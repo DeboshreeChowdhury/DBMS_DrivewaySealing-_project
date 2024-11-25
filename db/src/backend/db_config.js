@@ -1,16 +1,16 @@
 const mysql = require('mysql');
 
-// Database connection configuration
-const db = mysql.createConnection({
-    host: 'localhost',        // Replace with your database host (e.g., 'localhost')
-    user: 'root',             // Replace with your database username
-    password: '',             // Replace with your database password
-    database: 'driveway_sealing', // Replace with your database name
-    port: 3306                // Replace with your MySQL port if different
+// Create a connection to the database
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', // Default XAMPP username
+    password: '', // Default XAMPP password is empty
+    database: 'driveway_sealing', 
+    port: 3306, // MySQL port
 });
 
 // Connect to the database
-db.connect((err) => {
+connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err.message);
         process.exit(1); // Exit if there’s an error
@@ -19,4 +19,5 @@ db.connect((err) => {
 });
 
 // Export the database connection
-module.exports = db;
+module.exports = connection;
+
