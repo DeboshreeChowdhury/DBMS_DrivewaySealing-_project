@@ -1,6 +1,32 @@
 // Base URL for API
 const BASE_URL = 'http://localhost:5000/api';
 
+
+document.getElementById('registration-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const clientData = {
+        first_name: document.getElementById('first-name').value,
+        last_name: document.getElementById('last-name').value,
+        address: document.getElementById('address').value,
+        credit_card: document.getElementById('credit-card').value,
+        phone_number: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+    };
+
+    const response = await fetch('http://localhost:5000/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientData),
+    });
+
+    if (response.ok) {
+        alert('Registration successful!');
+    } else {
+        alert('Error: Registration failed.');
+    }
+});
+
 // Utility function to fetch data from the API
 async function fetchData(endpoint, method = 'GET', body = null) {
     const options = {
@@ -24,25 +50,73 @@ async function fetchData(endpoint, method = 'GET', body = null) {
 // --- Client Dashboard Functions ---
 
 // Submit a new quote
-if (document.getElementById('quote-form')) {
-    document.getElementById('quote-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const property_address = document.getElementById('property-address').value;
-        const square_feet = document.getElementById('square-feet').value;
-        const proposed_price = document.getElementById('proposed-price').value;
-        const note = document.getElementById('note').value;
+document.getElementById('quote-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-        const body = {
-            client_id: 1, // Replace with dynamic client ID
-            property_address,
-            square_feet,
-            proposed_price,
-            note,
-        };
+    const property_address = document.getElementById('property-address').value;
+    const square_feet = document.getElementById('square-feet').value;
+    const proposed_price = document.getElementById('proposed-price').value;
+    const note = document.getElementById('note').value;
 
-        const result = await fetchData('/quotes', 'POST', body);
-        if (result) alert('Quote submitted successfully!');
+    const images = Array.from(document.getElementById('images').files).map((file) => file.name); // Adjust as per your backend logic for image handling
+
+    const body = {
+        client_id: 1, // Replace with dynamic client ID
+        property_address,
+        square_feet,
+        proposed_price,
+        note,
+        images,
+    };
+
+    const response = await fetch('http://localhost:5000/api/quotes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
     });
+
+    if (response.ok) {
+        alert('Quote submitted successfully!');
+    } else {
+        alert('Error submitting quote. Please try again.');
+    }
+});
+
+document.getElementById('counter-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const counter_price = document.getElementById('counter-price').value;
+    const work_start_date = document.getElementById('work-start-date').value;
+    const work_end_date = document.getElementById('work-end-date').value;
+
+    const response = await fetch(`http://localhost:5000/api/quotes/${quoteId}/counter`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ counter_price, work_start_date, work_end_date }),
+    });
+
+    if (response.ok) {
+        alert('Counter-proposal sent successfully!');
+        populateAdminQuotes(); // Refresh the quotes list
+    } else {
+        alert('Error sending counter-proposal.');
+    }
+});
+async function rejectQuote(quoteId) {
+    const rejection_note = prompt('Enter the reason for rejection:');
+    if (!rejection_note) return;
+
+    const response = await fetch(`http://localhost:5000/api/quotes/${quoteId}/reject`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rejection_note }),
+    });
+
+    if (response.ok) {
+        alert('Quote rejected successfully!');
+        populateAdminQuotes(); // Refresh the quotes list
+    } else {
+        alert('Error rejecting quote.');
+    }
 }
 
 // Populate client quotes
@@ -81,6 +155,95 @@ async function cancelQuote(quoteId) {
     if (result) {
         alert('Quote canceled successfully!');
         populateClientQuotes();
+    }
+}
+async function acceptQuote(quoteId) {
+    const work_start_date = prompt('Enter the start date for the work (YYYY-MM-DD):');
+    const work_end_date = prompt('Enter the end date for the work (YYYY-MM-DD):');
+    const agreed_price = prompt('Enter the agreed price:');
+
+    const response = await fetch(`/api/quotes/${quoteId}/accept`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ work_start_date, work_end_date, agreed_price }),
+    });
+
+    if (response.ok) {
+        alert('Quote accepted, order created successfully!');
+        populateClientQuotes(); // Refresh quotes table
+    } else {
+        alert('Error accepting quote.');
+    }
+}
+async function resubmitQuote(quoteId) {
+    const client_note = prompt('Enter your new terms or comments:');
+    if (!client_note) return;
+
+    const response = await fetch(`/api/quotes/${quoteId}/resubmit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_note }),
+    });
+
+    if (response.ok) {
+        alert('Quote resubmitted successfully!');
+        populateClientQuotes(); // Refresh quotes table
+    } else {
+        alert('Error resubmitting quote.');
+    }
+}
+async function reviseQuote(quoteId) {
+    const proposed_price = prompt('Enter the revised price:');
+    const work_start_date = prompt('Enter the revised work start date (YYYY-MM-DD):');
+    const work_end_date = prompt('Enter the revised work end date (YYYY-MM-DD):');
+    const admin_note = prompt('Enter additional notes for the client:');
+
+    const response = await fetch(`/api/quotes/${quoteId}/revise`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ proposed_price, work_start_date, work_end_date, admin_note }),
+    });
+
+    if (response.ok) {
+        alert('Quote revised successfully!');
+        populateAdminQuotes(); // Refresh the quotes table
+    } else {
+        alert('Error revising quote.');
+    }
+}
+async function closeQuote(quoteId) {
+    const response = await fetch(`/api/quotes/${quoteId}/close`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.ok) {
+        alert('Quote closed successfully!');
+        populateAdminQuotes(); // Refresh the quotes table
+    } else {
+        alert('Error closing quote.');
+    }
+}
+async function fetchClientQuotes() {
+    const quotes = await fetchData('/quotes/1'); // Replace with client ID
+    if (quotes) {
+        document.getElementById('quotes-table').innerHTML = quotes.map(quote => `
+            <tr>
+                <td>${quote.quote_id}</td>
+                <td>${quote.proposed_price}</td>
+                <td>${quote.work_start_date}</td>
+                <td>${quote.work_end_date}</td>
+                <td>${quote.admin_note}</td>
+                <td>${quote.status}</td>
+                <td>
+                    ${quote.status === 'pending' ? `
+                        <button onclick="acceptQuote(${quote.quote_id})">Accept</button>
+                        <button onclick="resubmitQuote(${quote.quote_id})">Negotiate</button>
+                        <button onclick="closeQuote(${quote.quote_id})">Close</button>
+                    ` : ''}
+                </td>
+            </tr>
+        `).join('');
     }
 }
 
@@ -137,6 +300,24 @@ async function populateClientBills() {
             .join('');
     }
 }
+async function payBill(billId) {
+    const response = await fetch(`/api/bills/${billId}/pay`, {
+        method: 'PUT',
+    });
+    if (response.ok) alert('Bill paid successfully!');
+    populateClientBills(); // Refresh table
+}
+
+async function disputeBill(billId) {
+    const clientNote = prompt('Enter the reason for dispute:');
+    const response = await fetch(`/api/bills/${billId}/dispute`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientNote }),
+    });
+    if (response.ok) alert('Bill disputed successfully!');
+    populateClientBills(); // Refresh table
+}
 
 // Pay a bill
 async function payBill(billId) {
@@ -156,6 +337,16 @@ async function disputeBill(billId) {
         alert('Bill disputed successfully!');
         populateClientBills();
     }
+}
+async function resolveDispute(billId) {
+    const adminNote = prompt('Enter resolution note or discount:');
+    const response = await fetch(`/api/bills/${billId}/respond`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminNote }),
+    });
+    if (response.ok) alert('Dispute resolved successfully!');
+    populateAdminBills(); // Refresh table
 }
 
 // --- Admin Dashboard Functions ---

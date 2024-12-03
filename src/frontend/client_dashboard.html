@@ -21,28 +21,54 @@
     </header>
 
     <main>
-        <!-- Submit Quote Section -->
-        <section id="submit-quote-section">
-            <h2>Submit a New Quote</h2>
-            <form id="quote-form">
-                <label for="property-address">Property Address:</label>
-                <input type="text" id="property-address" name="property_address" required>
 
-                <label for="square-feet">Square Feet:</label>
-                <input type="number" id="square-feet" name="square_feet" min="1" required>
+        <!-- Client Registration Section -->
+<section id="client-registration-section">
+    <h2>Client Registration</h2>
+    <form id="registration-form">
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" name="first_name" required>
 
-                <label for="proposed-price">Proposed Price ($):</label>
-                <input type="number" id="proposed-price" name="proposed_price" min="0" step="0.01" required>
+        <label for="last-name">Last Name:</label>
+        <input type="text" id="last-name" name="last_name" required>
 
-                <label for="images">Upload Driveway Images (up to 5):</label>
-                <input type="file" id="images" name="images" accept="image/*" multiple required>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
 
-                <label for="note">Additional Notes:</label>
-                <textarea id="note" name="note" rows="4" placeholder="Add any specific requests or comments..."></textarea>
+        <label for="credit-card">Credit Card Information:</label>
+        <input type="text" id="credit-card" name="credit_card" required>
 
-                <button type="submit">Submit Quote</button>
-            </form>
-        </section>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone_number" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <button type="submit">Register</button>
+    </form>
+</section>
+<section id="quote submission"></section>
+    
+    <h2>Submit a Quote</h2>
+<form id="quote-form">
+    <label for="property-address">Property Address:</label>
+    <input type="text" id="property-address" name="property_address" required>
+
+    <label for="square-feet">Square Feet:</label>
+    <input type="number" id="square-feet" name="square_feet" required>
+
+    <label for="proposed-price">Proposed Price ($):</label>
+    <input type="number" id="proposed-price" name="proposed_price" required>
+
+    <label for="images">Upload Driveway Images (up to 5):</label>
+    <input type="file" id="images" name="images" accept="image/*" multiple required>
+
+    <label for="note">Additional Notes:</label>
+    <textarea id="note" name="note"></textarea>
+
+    <button type="submit">Submit Quote</button>
+</form>
+
 
         <!-- View Quotes Section -->
         <section id="quotes-section">
@@ -83,10 +109,14 @@
                 </tbody>
             </table>
         </section>
+        <button onclick="acceptQuote(quoteId)">Accept</button>
+        <button onclick="resubmitQuote(quoteId)">Resubmit</button>
 
         <!-- View Bills Section -->
         <section id="bills-section">
             <h2>View My Bills</h2>
+            
+
             <table>
                 <thead>
                     <tr>
@@ -102,6 +132,11 @@
                 </tbody>
             </table>
         </section>
+        <button onclick="payBill($bill.bill_id)">Pay</button>
+         <button onclick="disputeBill($bill.bill_id)">Dispute</button>
+
+        
+
     </main>
 
     <footer>

@@ -13,19 +13,28 @@ VALUES
 (2, '456 Elm St, Townsville', 750, 600.00, 'pending', 'Can you do it next week?'),
 (2, '456 Elm St, Townsville', 750, 650.00, 'rejected', 'Price too high.'),
 (3, '789 Oak St, Villageville', 1000, 900.00, 'agreed', 'Please provide the earliest time slot.'),
-(4, '321 Pine St, Hamletville', 1200, 1000.00, 'negotiating', 'Can we lower the price a bit?');
+(4, '321 Pine St, Hamletville', 1200, 1000.00, 'pending', 'Can we lower the price a bit?');
+
+-- Insert sample quote images
+INSERT INTO QuoteImages (quote_id, image_url)
+VALUES
+(1, 'image1_url'),
+(1, 'image2_url'),
+(2, 'image3_url'),
+(2, 'image4_url'),
+(3, 'image5_url');
 
 -- Insert sample orders
 INSERT INTO Orders (quote_id, work_start_date, work_end_date, agreed_price, status)
 VALUES
 (1, '2024-11-20', '2024-11-21', 450.00, 'completed'),
-(4, '2024-11-22', '2024-11-23', 1000.00, 'scheduled');
+(3, '2024-11-22', '2024-11-23', 900.00, 'scheduled');
 
 -- Insert sample bills
 INSERT INTO Bills (order_id, amount_due, status, note)
 VALUES
 (1, 450.00, 'paid', NULL),
-(2, 1000.00, 'pending', 'Awaiting payment.');
+(2, 900.00, 'pending', 'Awaiting payment.');
 
 -- Insert sample responses (for negotiation history)
 INSERT INTO Responses (quote_id, response_note, response_type)

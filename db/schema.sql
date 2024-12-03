@@ -1,12 +1,12 @@
 -- Create the Clients table
 CREATE TABLE Clients (
     client_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
     address TEXT NOT NULL,
-    credit_card_info VARCHAR(16) NOT NULL,
+    credit_card_info VARCHAR(20) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL
+    email VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Create the Quotes table
@@ -16,11 +16,24 @@ CREATE TABLE Quotes (
     property_address TEXT NOT NULL,
     square_feet INT NOT NULL,
     proposed_price DECIMAL(10, 2) NOT NULL,
-    status ENUM('pending', 'agreed', 'rejected', 'negotiating') DEFAULT 'pending',
     note TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    status ENUM('pending', 'agreed', 'rejected') DEFAULT 'pending',
+    submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    counter_price DECIMAL(10, 2) NULL,
+    work_start_date DATE NULL,
+    work_end_date DATE NULL,
+    rejection_note TEXT NULL,
+    admin_note TEXT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES Clients(client_id) ON DELETE CASCADE
+);
+
+-- Create the QuoteImages table
+CREATE TABLE QuoteImages (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    quote_id INT NOT NULL,
+    image_url TEXT NOT NULL,
+    FOREIGN KEY (quote_id) REFERENCES Quotes(quote_id) ON DELETE CASCADE
 );
 
 -- Create the Orders table
@@ -41,8 +54,11 @@ CREATE TABLE Bills (
     amount_due DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'paid', 'disputed') DEFAULT 'pending',
     note TEXT,
+    admin_note TEXT NULL,
+    client_note TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
 );
 

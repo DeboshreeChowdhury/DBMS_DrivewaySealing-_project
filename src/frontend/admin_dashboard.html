@@ -42,6 +42,25 @@
             </table>
         </section>
 
+
+        <form id="counter-form">
+            <label for="counter-price">Counter Proposal Price:</label>
+            <input type="number" id="counter-price" name="counter_price" required>
+        
+            <label for="work-start-date">Work Start Date:</label>
+            <input type="date" id="work-start-date" name="work_start_date" required>
+        
+            <label for="work-end-date">Work End Date:</label>
+            <input type="date" id="work-end-date" name="work_end_date" required>
+        
+            <button type="submit">Send Counter-Proposal</button>
+        </form>
+        <button onclick="rejectQuote(quoteId)">Reject</button>
+        <button onclick="reviseQuote(quoteId)">Revise</button>
+        <button onclick="closeQuote(quoteId)">Close</button>
+
+
+
         <!-- Orders Section -->
         <section id="orders-section">
             <h2>Manage Orders</h2>
@@ -81,6 +100,8 @@
                     <!-- Bills will be populated dynamically -->
                 </tbody>
             </table>
+            <button onclick="resolveDispute($bill.bill_id)">Resolve Dispute</button>
+
         </section>
 
         <!-- Reports Section -->

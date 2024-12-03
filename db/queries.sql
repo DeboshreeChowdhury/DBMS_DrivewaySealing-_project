@@ -31,13 +31,13 @@ GROUP BY c.client_id
 HAVING COUNT(q.quote_id) = 3;
 
 -- Query 3: This Month's Quotes
--- List all the agreed quotes in the current month (e.g., December 2024).
+-- List all the agreed quotes in the current month.
 SELECT q.quote_id, c.first_name, c.last_name, q.property_address, q.proposed_price
 FROM Quotes q
 JOIN Clients c ON q.client_id = c.client_id
 WHERE q.status = 'agreed'
-AND MONTH(q.updated_at) = MONTH(CURRENT_DATE())
-AND YEAR(q.updated_at) = YEAR(CURRENT_DATE());
+AND MONTH(q.last_updated) = MONTH(CURRENT_DATE())
+AND YEAR(q.last_updated) = YEAR(CURRENT_DATE());
 
 -- Query 4: Prospective Clients
 -- List all the clients that have registered but never submitted any request for quotes.
@@ -48,7 +48,6 @@ WHERE q.quote_id IS NULL;
 
 -- Query 5: Largest Driveway
 -- List the locations of the driveways with the largest square feet that David Smith ever worked.
--- List all locations if there is a tie or just one location if there is no tie.
 SELECT q.property_address, q.square_feet
 FROM Quotes q
 WHERE q.square_feet = (

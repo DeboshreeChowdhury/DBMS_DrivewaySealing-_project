@@ -6,6 +6,19 @@ const Model = require('./model');
 router.use(express.json());
 
 // --- Client Routes ---
+router.post('/clients', (req, res) => {
+    const clientData = req.body;
+    Model.addClient(clientData, (err, results) => {
+        if (err) {
+            console.error('Error adding client:', err.message);
+            return res.status(500).json({ error: 'Failed to register client.' });
+        }
+        res.status(201).json({
+            message: 'Client registered successfully.',
+            clientId: results.insertId,
+        });
+    });
+});
 
 // Get all clients
 router.get('/clients', (req, res) => {
@@ -48,17 +61,55 @@ router.get('/quotes/:clientId', (req, res) => {
 });
 
 // Add a new quote
-router.post('/quotes', (req, res) => {
-    const quoteData = req.body;
-    if (!quoteData.client_id || !quoteData.property_address || !quoteData.square_feet) {
-        return res.status(400).json({ error: 'Missing required quote details.' });
-    }
-    Model.addQuote(quoteData, (err, results) => {
+router.post('/quotes', async (req, res) => {
+    const { client_id, property_address, square_feet, proposed_price, note, images } = req.body;
+
+    Model.addQuote({ client_id, property_address, square_feet, proposed_price, note }, (err, results) => {
         if (err) {
             console.error('Error adding quote:', err.message);
             return res.status(500).json({ error: 'Failed to add quote.' });
         }
-        res.status(201).json({ message: 'Quote added successfully.', quoteId: results.insertId });
+        const quoteId = results.insertId;
+
+        // Add images associated with the quote
+        if (images && images.length > 0) {
+            images.forEach((image) => {
+                Model.addQuoteImage(quoteId, image, (err) => {
+                    if (err) {
+                        console.error('Error adding quote image:', err.message);
+                    }
+                });
+            });
+        }
+
+        res.status(201).json({ message: 'Quote submitted successfully.', quoteId });
+    });
+});
+
+router.put('/quotes/:quoteId/reject', (req, res) => {
+    const quoteId = req.params.quoteId;
+    const { rejection_note } = req.body;
+
+    Model.rejectQuote(quoteId, rejection_note, (err, results) => {
+        if (err) {
+            console.error(`Error rejecting quote ID ${quoteId}:`, err.message);
+            return res.status(500).json({ error: 'Failed to reject quote.' });
+        }
+        res.status(200).json({ message: 'Quote rejected successfully.' });
+    });
+});
+
+
+router.put('/quotes/:quoteId/counter', (req, res) => {
+    const quoteId = req.params.quoteId;
+    const { counter_price, work_start_date, work_end_date } = req.body;
+
+    Model.updateQuoteWithCounter(quoteId, { counter_price, work_start_date, work_end_date }, (err, results) => {
+        if (err) {
+            console.error(`Error sending counter-proposal for quote ID ${quoteId}:`, err.message);
+            return res.status(500).json({ error: 'Failed to send counter-proposal.' });
+        }
+        res.status(200).json({ message: 'Counter-proposal sent successfully.' });
     });
 });
 
@@ -72,6 +123,49 @@ router.get('/orders', (req, res) => {
             return res.status(500).json({ error: 'Failed to fetch orders.' });
         }
         res.status(200).json({ message: 'Orders fetched successfully.', orders: results });
+    });
+});
+router.post('/quotes/:quoteId/accept', (req, res) => {
+    const quoteId = req.params.quoteId;
+    const { work_start_date, work_end_date, agreed_price } = req.body;
+
+    Model.acceptQuote(quoteId, { work_start_date, work_end_date, agreed_price }, (err, results) => {
+        if (err) {
+            console.error(`Error accepting quote ID ${quoteId}:`, err.message);
+            return res.status(500).json({ error: 'Failed to accept quote.' });
+        }
+        res.status(201).json({ message: 'Quote accepted, order created successfully.' });
+    });
+});
+router.put('/quotes/:quoteId/resubmit', (req, res) => {
+    const quoteId = req.params.quoteId;
+    const { client_note } = req.body;
+
+    Model.resubmitQuote(quoteId, client_note, (err, results) => {
+        if (err) {
+            console.error(`Error resubmitting quote ID ${quoteId}:`, err.message);
+            return res.status(500).json({ error: 'Failed to resubmit quote.' });
+        }
+        res.status(200).json({ message: 'Quote resubmitted successfully.' });
+    });
+});
+closeQuote: (quoteId, callback) => {
+    const query = `
+        UPDATE Quotes
+        SET status = 'closed'
+        WHERE quote_id = ?
+    `;
+    db.query(query, [quoteId], (err, results) => callback(err, results));
+},
+router.put('/quotes/:quoteId/close', (req, res) => {
+    const quoteId = req.params.quoteId;
+
+    Model.closeQuote(quoteId, (err, results) => {
+        if (err) {
+            console.error(`Error closing quote ID ${quoteId}:`, err.message);
+            return res.status(500).json({ error: 'Failed to close quote.' });
+        }
+        res.status(200).json({ message: 'Quote closed successfully.' });
     });
 });
 
@@ -100,6 +194,40 @@ router.get('/bills', (req, res) => {
             return res.status(500).json({ error: 'Failed to fetch bills.' });
         }
         res.status(200).json({ message: 'Bills fetched successfully.', bills: results });
+    });
+});
+router.post('/bills', (req, res) => {
+    const billData = req.body;
+
+    Model.generateBill(billData, (err, results) => {
+        if (err) {
+            console.error('Error generating bill:', err.message);
+            return res.status(500).json({ error: 'Failed to generate bill.' });
+        }
+        res.status(201).json({ message: 'Bill generated successfully.', billId: results.insertId });
+    });
+});
+router.put('/bills/:billId/pay', (req, res) => {
+    const billId = req.params.billId;
+
+    Model.payBill(billId, (err, results) => {
+        if (err) {
+            console.error('Error paying bill:', err.message);
+            return res.status(500).json({ error: 'Failed to pay bill.' });
+        }
+        res.status(200).json({ message: 'Bill paid successfully.' });
+    });
+});
+router.put('/bills/:billId/dispute', (req, res) => {
+    const billId = req.params.billId;
+    const { clientNote } = req.body;
+
+    Model.respondToBill(billId, clientNote, (err, results) => {
+        if (err) {
+            console.error('Error disputing bill:', err.message);
+            return res.status(500).json({ error: 'Failed to dispute bill.' });
+        }
+        res.status(200).json({ message: 'Bill disputed successfully.' });
     });
 });
 
