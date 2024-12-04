@@ -5,9 +5,7 @@ const Model = {
     // Fetch all clients
     getAllClients: (callback) => {
         const query = 'SELECT * FROM Clients';
-        db.query(query, (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, callback);
     },
 
     // Add a new client
@@ -17,21 +15,13 @@ const Model = {
             VALUES (?, ?, ?, ?, ?, ?)
         `;
         const { first_name, last_name, address, credit_card_info, phone_number, email } = clientData;
-        db.query(
-            query,
-            [first_name, last_name, address, credit_card_info, phone_number, email],
-            (err, results) => {
-                callback(err, results);
-            }
-        );
+        db.query(query, [first_name, last_name, address, credit_card_info, phone_number, email], callback);
     },
 
     // Fetch quotes by client ID
     getQuotesByClientId: (clientId, callback) => {
         const query = 'SELECT * FROM Quotes WHERE client_id = ?';
-        db.query(query, [clientId], (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, [clientId], callback);
     },
 
     // Add a new quote
@@ -41,25 +31,17 @@ const Model = {
             VALUES (?, ?, ?, ?, ?)
         `;
         const { client_id, property_address, square_feet, proposed_price, note } = quoteData;
-        db.query(
-            query,
-            [client_id, property_address, square_feet, proposed_price, note],
-            (err, results) => {
-                callback(err, results);
-            }
-        );
+        db.query(query, [client_id, property_address, square_feet, proposed_price, note], callback);
     },
-    
+
+    // Add images to a quote
     addQuoteImage: (quoteId, imageUrl, callback) => {
         const query = `
             INSERT INTO QuoteImages (quote_id, image_url)
             VALUES (?, ?)
         `;
-        db.query(query, [quoteId, imageUrl], (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, [quoteId, imageUrl], callback);
     },
-    
 
     // Update a quote's status
     updateQuoteStatus: (quoteId, status, callback) => {
@@ -68,155 +50,65 @@ const Model = {
             SET status = ?
             WHERE quote_id = ?
         `;
-        db.query(query, [status, quoteId], (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, [status, quoteId], callback);
     },
 
-    // Fetch all orders
-    getAllOrders: (callback) => {
-        const query = `
-            SELECT o.*, q.property_address, q.square_feet, c.first_name, c.last_name
-            FROM Orders o
-            JOIN Quotes q ON o.quote_id = q.quote_id
-            JOIN Clients c ON q.client_id = c.client_id
-        `;
-        db.query(query, (err, results) => {
-            callback(err, results);
-        });
-    },
-
-
-    updateQuoteWithCounter: (quoteId, counterData, callback) => {
-        const query = `
-            UPDATE Quotes
-            SET counter_price = ?, work_start_date = ?, work_end_date = ?, status = 'counter_proposed'
-            WHERE quote_id = ?
-        `;
-        const { counter_price, work_start_date, work_end_date } = counterData;
-        db.query(
-            query,
-            [counter_price, work_start_date, work_end_date, quoteId],
-            (err, results) => {
-                callback(err, results);
-            }
-        );
-    },
+    // Reject a quote with a note
     rejectQuote: (quoteId, rejectionNote, callback) => {
         const query = `
             UPDATE Quotes
             SET status = 'rejected', rejection_note = ?
             WHERE quote_id = ?
         `;
-        db.query(query, [rejectionNote, quoteId], (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, [rejectionNote, quoteId], callback);
     },
-    
-    // Add a new order
-    addOrder: (orderData, callback) => {
+
+    // Counter a quote with admin adjustments
+    updateQuoteWithCounter: (quoteId, counterData, callback) => {
         const query = `
-            INSERT INTO Orders (quote_id, work_start_date, work_end_date, agreed_price)
-            VALUES (?, ?, ?, ?)
+            UPDATE Quotes
+            SET counter_price = ?, work_start_date = ?, work_end_date = ?, admin_note = ?, status = 'counter_proposed'
+            WHERE quote_id = ?
         `;
-        const { quote_id, work_start_date, work_end_date, agreed_price } = orderData;
-        db.query(
-            query,
-            [quote_id, work_start_date, work_end_date, agreed_price],
-            (err, results) => {
-                callback(err, results);
-            }
-        );
+        const { counter_price, work_start_date, work_end_date, admin_note } = counterData;
+        db.query(query, [counter_price, work_start_date, work_end_date, admin_note, quoteId], callback);
     },
+
+    // Accept a quote and create an order
     acceptQuote: (quoteId, orderData, callback) => {
         const query = `
             INSERT INTO Orders (quote_id, work_start_date, work_end_date, agreed_price)
             VALUES (?, ?, ?, ?)
         `;
         const { work_start_date, work_end_date, agreed_price } = orderData;
-        db.query(
-            query,
-            [quoteId, work_start_date, work_end_date, agreed_price],
-            (err, results) => {
-                if (err) return callback(err);
-                // Update the quote status to "accepted"
-                const updateQuoteQuery = `UPDATE Quotes SET status = 'accepted' WHERE quote_id = ?`;
-                db.query(updateQuoteQuery, [quoteId], (err) => callback(err, results));
-            }
-        );
-    },
-
-    updateQuoteByAdmin: (quoteId, adminData, callback) => {
-        const query = `
-            UPDATE Quotes
-            SET proposed_price = ?, work_start_date = ?, work_end_date = ?, admin_note = ?, status = 'pending'
-            WHERE quote_id = ?
-        `;
-        const { proposed_price, work_start_date, work_end_date, admin_note } = adminData;
-        db.query(
-            query,
-            [proposed_price, work_start_date, work_end_date, admin_note, quoteId],
-            (err, results) => callback(err, results)
-        );
-    },
-    updateQuoteByAdmin: (quoteId, adminData, callback) => {
-        const query = `
-            UPDATE Quotes
-            SET proposed_price = ?, work_start_date = ?, work_end_date = ?, admin_note = ?, status = 'pending'
-            WHERE quote_id = ?
-        `;
-        const { proposed_price, work_start_date, work_end_date, admin_note } = adminData;
-        db.query(
-            query,
-            [proposed_price, work_start_date, work_end_date, admin_note, quoteId],
-            (err, results) => callback(err, results)
-        );
-    },
-    
-    resubmitQuote: (quoteId, clientNote, callback) => {
-        const query = `
-            UPDATE Quotes
-            SET client_note = ?, status = 'pending'
-            WHERE quote_id = ?
-        `;
-        db.query(query, [clientNote, quoteId], (err, results) => {
-            callback(err, results);
+        db.query(query, [quoteId, work_start_date, work_end_date, agreed_price], (err, results) => {
+            if (err) return callback(err);
+            const updateQuoteQuery = `UPDATE Quotes SET status = 'agreed' WHERE quote_id = ?`;
+            db.query(updateQuoteQuery, [quoteId], callback);
         });
     },
-    
+
+    // Fetch all orders
+    getAllOrders: (callback) => {
+        const query = `
+            SELECT o.*, q.property_address, c.first_name, c.last_name
+            FROM Orders o
+            JOIN Quotes q ON o.quote_id = q.quote_id
+            JOIN Clients c ON q.client_id = c.client_id
+        `;
+        db.query(query, callback);
+    },
+
+    // Add a new bill
     generateBill: (billData, callback) => {
         const query = `
-            INSERT INTO Bills (order_id, amount_due, note, status)
-            VALUES (?, ?, ?, 'pending')
+            INSERT INTO Bills (order_id, amount_due, note)
+            VALUES (?, ?, ?)
         `;
         const { order_id, amount_due, note } = billData;
         db.query(query, [order_id, amount_due, note], callback);
     },
-    updateBillStatus: (billId, status, adminNote, callback) => {
-        const query = `
-            UPDATE Bills
-            SET status = ?, admin_note = ?
-            WHERE bill_id = ?
-        `;
-        db.query(query, [status, adminNote, billId], callback);
-    },
-    respondToBill: (billId, adminNote, callback) => {
-        const query = `
-            UPDATE Bills
-            SET admin_note = ?, status = 'pending'
-            WHERE bill_id = ?
-        `;
-        db.query(query, [adminNote, billId], callback);
-    },
-    payBill: (billId, callback) => {
-        const query = `
-            UPDATE Bills
-            SET status = 'paid', last_updated = NOW()
-            WHERE bill_id = ?
-        `;
-        db.query(query, [billId], callback);
-    },
-    
+
     // Fetch all bills
     getAllBills: (callback) => {
         const query = `
@@ -226,40 +118,32 @@ const Model = {
             JOIN Quotes q ON o.quote_id = q.quote_id
             JOIN Clients c ON q.client_id = c.client_id
         `;
-        db.query(query, (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, callback);
     },
 
-    // Add a new bill
-    addBill: (billData, callback) => {
-        const query = `
-            INSERT INTO Bills (order_id, amount_due, note)
-            VALUES (?, ?, ?)
-        `;
-        const { order_id, amount_due, note } = billData;
-        db.query(query, [order_id, amount_due, note], (err, results) => {
-            callback(err, results);
-        });
-    },
-
-    // Update bill status
-    updateBillStatus: (billId, status, callback) => {
+    // Pay a bill
+    payBill: (billId, callback) => {
         const query = `
             UPDATE Bills
-            SET status = ?
+            SET status = 'paid', last_updated = NOW()
             WHERE bill_id = ?
         `;
-        db.query(query, [status, billId], (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, [billId], callback);
     },
 
-    // Run SQL queries for reporting (e.g., top clients, overdue bills)
+    // Dispute a bill
+    disputeBill: (billId, clientNote, callback) => {
+        const query = `
+            UPDATE Bills
+            SET status = 'disputed', client_note = ?
+            WHERE bill_id = ?
+        `;
+        db.query(query, [clientNote, billId], callback);
+    },
+
+    // Run a custom report
     runCustomQuery: (query, params, callback) => {
-        db.query(query, params, (err, results) => {
-            callback(err, results);
-        });
+        db.query(query, params, callback);
     },
 };
 

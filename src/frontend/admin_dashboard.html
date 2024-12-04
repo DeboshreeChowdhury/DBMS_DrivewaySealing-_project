@@ -8,18 +8,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Header Section -->
     <header>
         <h1>Admin Dashboard</h1>
         <nav>
             <ul>
-                <li><a href="#quotes-section">Manage Quotes</a></li>
-                <li><a href="#orders-section">Manage Orders</a></li>
-                <li><a href="#bills-section">Manage Bills</a></li>
-                <li><a href="#reports-section">Generate Reports</a></li>
+                <li><a href="#quotes-section" aria-label="Manage Quotes Section">Manage Quotes</a></li>
+                <li><a href="#orders-section" aria-label="Manage Orders Section">Manage Orders</a></li>
+                <li><a href="#bills-section" aria-label="Manage Bills Section">Manage Bills</a></li>
+                <li><a href="#reports-section" aria-label="Generate Reports Section">Generate Reports</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- Main Content -->
     <main>
         <!-- Quotes Section -->
         <section id="quotes-section">
@@ -41,25 +43,6 @@
                 </tbody>
             </table>
         </section>
-
-
-        <form id="counter-form">
-            <label for="counter-price">Counter Proposal Price:</label>
-            <input type="number" id="counter-price" name="counter_price" required>
-        
-            <label for="work-start-date">Work Start Date:</label>
-            <input type="date" id="work-start-date" name="work_start_date" required>
-        
-            <label for="work-end-date">Work End Date:</label>
-            <input type="date" id="work-end-date" name="work_end_date" required>
-        
-            <button type="submit">Send Counter-Proposal</button>
-        </form>
-        <button onclick="rejectQuote(quoteId)">Reject</button>
-        <button onclick="reviseQuote(quoteId)">Revise</button>
-        <button onclick="closeQuote(quoteId)">Close</button>
-
-
 
         <!-- Orders Section -->
         <section id="orders-section">
@@ -100,8 +83,6 @@
                     <!-- Bills will be populated dynamically -->
                 </tbody>
             </table>
-            <button onclick="resolveDispute($bill.bill_id)">Resolve Dispute</button>
-
         </section>
 
         <!-- Reports Section -->
@@ -122,15 +103,17 @@
                 <button type="submit">Generate Report</button>
             </form>
             <div id="report-results">
-                <!-- Report results will be displayed here -->
+                <!-- Report results will be displayed dynamically -->
             </div>
         </section>
     </main>
 
+    <!-- Footer Section -->
     <footer>
         <p>&copy; 2024 Driveway Sealing Management. All rights reserved.</p>
     </footer>
 
+    <!-- Script -->
     <script src="scripts.js"></script>
 </body>
 </html>

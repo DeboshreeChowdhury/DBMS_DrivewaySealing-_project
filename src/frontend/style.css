@@ -114,11 +114,12 @@ main {
     padding: 0.5rem 1rem;
     border-radius: 5px;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .option .button:hover {
     background-color: #004494;
+    transform: scale(1.05);
 }
 
 /* Table Styling */
@@ -134,7 +135,8 @@ table thead {
     font-weight: bold;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 0.75rem;
     text-align: left;
     border: 1px solid #ddd;
@@ -164,13 +166,24 @@ form label {
     color: #333;
 }
 
-form input, form textarea, form select, form button {
+form input,
+form textarea,
+form select,
+form button {
     width: 100%;
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #0056b3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
 }
 
 form button {
@@ -207,5 +220,17 @@ footer {
     nav ul {
         flex-direction: column;
         gap: 0.5rem;
+    }
+
+    nav a {
+        padding: 0.5rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    form {
+        padding: 1rem;
     }
 }
