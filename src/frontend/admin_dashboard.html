@@ -8,20 +8,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header Section -->
     <header>
         <h1>Admin Dashboard</h1>
         <nav>
             <ul>
-                <li><a href="#quotes-section" aria-label="Manage Quotes Section">Manage Quotes</a></li>
-                <li><a href="#orders-section" aria-label="Manage Orders Section">Manage Orders</a></li>
-                <li><a href="#bills-section" aria-label="Manage Bills Section">Manage Bills</a></li>
-                <li><a href="#reports-section" aria-label="Generate Reports Section">Generate Reports</a></li>
+                <li><a href="#quotes-section">Manage Quotes</a></li>
+                <li><a href="#orders-section">Manage Orders</a></li>
+                <li><a href="#bills-section">Manage Bills</a></li>
+                <li><a href="#reports-section">Generate Reports</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Main Content -->
     <main>
         <!-- Quotes Section -->
         <section id="quotes-section">
@@ -90,7 +88,7 @@
             <h2>Generate Reports</h2>
             <form id="report-form">
                 <label for="report-type">Select Report:</label>
-                <select id="report-type" name="report-type">
+                <select id="report-type">
                     <option value="top_clients">Top Clients</option>
                     <option value="difficult_clients">Difficult Clients</option>
                     <option value="this_month_quotes">This Month's Quotes</option>
@@ -103,17 +101,15 @@
                 <button type="submit">Generate Report</button>
             </form>
             <div id="report-results">
-                <!-- Report results will be displayed dynamically -->
+                <!-- Report results will be displayed here -->
             </div>
         </section>
     </main>
 
-    <!-- Footer Section -->
     <footer>
         <p>&copy; 2024 Driveway Sealing Management. All rights reserved.</p>
     </footer>
 
-    <!-- Script -->
     <script src="scripts.js"></script>
 </body>
 </html>
