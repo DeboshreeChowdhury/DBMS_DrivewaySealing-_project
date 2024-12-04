@@ -6,7 +6,9 @@ CREATE TABLE Clients (
     address TEXT NOT NULL,
     credit_card_info VARCHAR(20) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Create the Quotes table
@@ -19,11 +21,11 @@ CREATE TABLE Quotes (
     note TEXT,
     status ENUM('pending', 'agreed', 'rejected') DEFAULT 'pending',
     submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    counter_price DECIMAL(10, 2) NULL,
-    work_start_date DATE NULL,
-    work_end_date DATE NULL,
-    rejection_note TEXT NULL,
-    admin_note TEXT NULL,
+    counter_price DECIMAL(10, 2),
+    work_start_date DATE,
+    work_end_date DATE,
+    rejection_note TEXT,
+    admin_note TEXT,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES Clients(client_id) ON DELETE CASCADE
 );
@@ -40,10 +42,12 @@ CREATE TABLE QuoteImages (
 CREATE TABLE Orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     quote_id INT NOT NULL,
+    agreed_price DECIMAL(10, 2) NOT NULL,
     work_start_date DATE NOT NULL,
     work_end_date DATE NOT NULL,
-    agreed_price DECIMAL(10, 2) NOT NULL,
-    status ENUM('scheduled', 'completed') DEFAULT 'scheduled',
+    status ENUM('scheduled', 'completed', 'cancelled') DEFAULT 'scheduled',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (quote_id) REFERENCES Quotes(quote_id) ON DELETE CASCADE
 );
 
@@ -53,12 +57,10 @@ CREATE TABLE Bills (
     order_id INT NOT NULL,
     amount_due DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'paid', 'disputed') DEFAULT 'pending',
-    note TEXT,
-    admin_note TEXT NULL,
-    client_note TEXT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    client_note TEXT,
+    admin_note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
 );
 
@@ -68,7 +70,7 @@ CREATE TABLE Responses (
     quote_id INT DEFAULT NULL,
     bill_id INT DEFAULT NULL,
     response_note TEXT NOT NULL,
-    response_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    response_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     response_type ENUM('client', 'admin') NOT NULL,
     FOREIGN KEY (quote_id) REFERENCES Quotes(quote_id) ON DELETE CASCADE,
     FOREIGN KEY (bill_id) REFERENCES Bills(bill_id) ON DELETE CASCADE

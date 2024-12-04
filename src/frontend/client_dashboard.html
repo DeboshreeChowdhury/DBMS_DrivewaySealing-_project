@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Client Dashboard for managing driveway-sealing quotes, orders, and bills.">
+    <meta name="keywords" content="client dashboard, driveway sealing, quotes, orders, bills">
     <title>Client Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <!-- Header -->
@@ -29,22 +31,22 @@
             <h2>Client Registration</h2>
             <form id="registration-form">
                 <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first_name" required>
+                <input type="text" id="first-name" name="first_name" placeholder="John" required>
 
                 <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last_name" required>
+                <input type="text" id="last-name" name="last_name" placeholder="Doe" required>
 
                 <label for="address">Address:</label>
-                <input type="text" id="address" name="address" required>
+                <input type="text" id="address" name="address" placeholder="123 Main St, Cityville" required>
 
                 <label for="credit-card">Credit Card Information:</label>
-                <input type="text" id="credit-card" name="credit_card" required>
+                <input type="text" id="credit-card" name="credit_card" placeholder="1234-5678-1234-5678" required>
 
                 <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone_number" required>
+                <input type="tel" id="phone" name="phone_number" placeholder="123-456-7890" required>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
 
                 <button type="submit">Register</button>
             </form>
@@ -55,19 +57,19 @@
             <h2>Submit a Quote</h2>
             <form id="quote-form">
                 <label for="property-address">Property Address:</label>
-                <input type="text" id="property-address" name="property_address" required>
+                <input type="text" id="property-address" name="property_address" placeholder="123 Main St" required>
 
                 <label for="square-feet">Square Feet:</label>
-                <input type="number" id="square-feet" name="square_feet" required>
+                <input type="number" id="square-feet" name="square_feet" placeholder="500" required>
 
                 <label for="proposed-price">Proposed Price ($):</label>
-                <input type="number" id="proposed-price" name="proposed_price" required>
+                <input type="number" id="proposed-price" name="proposed_price" placeholder="1000" required>
 
                 <label for="images">Upload Driveway Images (up to 5):</label>
                 <input type="file" id="images" name="images" accept="image/*" multiple required>
 
                 <label for="note">Additional Notes:</label>
-                <textarea id="note" name="note"></textarea>
+                <textarea id="note" name="note" placeholder="Additional details about the driveway or project..."></textarea>
 
                 <button type="submit">Submit Quote</button>
             </form>
@@ -88,7 +90,9 @@
                     </tr>
                 </thead>
                 <tbody id="quotes-table">
-                    <!-- Quotes will be populated dynamically -->
+                    <tr>
+                        <td colspan="6">Loading quotes...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -108,7 +112,9 @@
                     </tr>
                 </thead>
                 <tbody id="orders-table">
-                    <!-- Orders will be populated dynamically -->
+                    <tr>
+                        <td colspan="6">Loading orders...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -127,16 +133,19 @@
                     </tr>
                 </thead>
                 <tbody id="bills-table">
-                    <!-- Bills will be populated dynamically -->
+                    <tr>
+                        <td colspan="5">Loading bills...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
     </main>
-
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Driveway Sealing Management. All rights reserved.</p>
     </footer>
+
+    
 
     <!-- Scripts -->
     <script src="scripts.js"></script>

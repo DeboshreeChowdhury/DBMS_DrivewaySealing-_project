@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Admin Dashboard for managing quotes, orders, bills, and generating reports.">
+    <meta name="keywords" content="admin dashboard, quotes, orders, bills, reports">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <!-- Header -->
     <header>
         <h1>Admin Dashboard</h1>
         <nav>
@@ -20,6 +23,7 @@
         </nav>
     </header>
 
+    <!-- Main Content -->
     <main>
         <!-- Quotes Section -->
         <section id="quotes-section">
@@ -37,7 +41,9 @@
                     </tr>
                 </thead>
                 <tbody id="quotes-table">
-                    <!-- Quotes will be populated dynamically -->
+                    <tr>
+                        <td colspan="7">Loading quotes...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -58,7 +64,9 @@
                     </tr>
                 </thead>
                 <tbody id="orders-table">
-                    <!-- Orders will be populated dynamically -->
+                    <tr>
+                        <td colspan="7">Loading orders...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -78,7 +86,9 @@
                     </tr>
                 </thead>
                 <tbody id="bills-table">
-                    <!-- Bills will be populated dynamically -->
+                    <tr>
+                        <td colspan="6">Loading bills...</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -101,10 +111,11 @@
                 <button type="submit">Generate Report</button>
             </form>
             <div id="report-results">
-                <!-- Report results will be displayed here -->
+                <p>Report results will appear here.</p>
             </div>
         </section>
     </main>
+
 
     <footer>
         <p>&copy; 2024 Driveway Sealing Management. All rights reserved.</p>
