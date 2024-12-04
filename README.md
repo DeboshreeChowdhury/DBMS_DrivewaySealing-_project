@@ -69,32 +69,32 @@ Project Overview:
 ---
 
 ##Team Members
--**Deboshree Chowdhury 
--**Syed Ali
+-**Deboshree Chowdhury**
+-**Syed Ali**
 
 ### 💻 How to Run the Project
--**git clone https://github.com/your-username/driveway-sealing-management.git
--**cd driveway-sealing-management
--**cd src/backend
--**npm install
--**node server.js
---**Open the src/frontend/index.html file in a browser to view the landing page.
+-**git clone https://github.com/your-username/driveway-sealing-management.git**
+-**cd driveway-sealing-management**
+-**cd src/backend**
+-**npm install**
+-**node server.js**
+--**Open the src/frontend/index.html file in a browser to view the landing page.**
 
 
 ### Project Workflow
--**Client Dashboard:
+-**Client Dashboard:**
 
--**Register as a client.
--**Submit a driveway sealing request.
--**View and manage submitted quotes, orders, and bills.
--**Admin Dashboard:
+-**Register as a client.**
+-**Submit a driveway sealing request.**
+-**View and manage submitted quotes, orders, and bills.**
+-**Admin Dashboard:**
 
--**Review client quotes.
--**Approve, reject, or negotiate terms.
--**Generate orders and bills.
--**Handle disputes and generate reports.
--**Negotiation Loop:
--**Both clients and admin can negotiate quotes and bills until an agreement is reached or the request is closed.
+-**Review client quotes.**
+-**Approve, reject, or negotiate terms.**
+-**Generate orders and bills.**
+-**Handle disputes and generate reports.**
+-**Negotiation Loop:**
+-**Both clients and admin can negotiate quotes and bills until an agreement is reached or the request is closed.**
 
 
 
