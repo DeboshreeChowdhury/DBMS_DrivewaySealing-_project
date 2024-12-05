@@ -11,12 +11,14 @@
     "backend",
     "driveway-sealing",
     "nodejs",
-    "mysql"
+    "mysql",
+    "api"
   ],
   "author": "Your Name",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1", 
     "express": "^4.21.1",
     "mysql": "^2.18.1"
   },
