@@ -24,6 +24,19 @@ const Model = {
         });
     },
 
+    // Fetch all quotes
+    getAllQuotes: (callback) => {
+        const query = `
+            SELECT q.*, c.first_name AS client_name, c.last_name AS client_last_name
+            FROM Quotes q
+            JOIN Clients c ON q.client_id = c.client_id
+        `;
+        db.query(query, (err, results) => {
+            if (err) return callback(err);
+            callback(null, results);
+        });
+    },
+
     // Fetch quotes by client ID
     getQuotesByClientId: (clientId, callback) => {
         const query = 'SELECT * FROM Quotes WHERE client_id = ?';
@@ -45,20 +58,18 @@ const Model = {
             callback(null, results);
         });
     },
-
-    // Add images to a quote
     addQuoteImages: (quoteId, imageUrls, callback) => {
         const query = `
             INSERT INTO QuoteImages (quote_id, image_url)
-            VALUES (?, ?)
+            VALUES ?
         `;
-        const data = imageUrls.map((url) => [quoteId, url]);
-        db.query(query, [data], (err, results) => {
+        const values = imageUrls.map((url) => [quoteId, url]); // Create an array of values for bulk insert
+        db.query(query, [values], (err, results) => {
             if (err) return callback(err);
             callback(null, results);
         });
     },
-
+    
     // Update a quote's status
     updateQuoteStatus: (quoteId, status, callback) => {
         const query = `
@@ -84,6 +95,28 @@ const Model = {
             callback(null, results);
         });
     },
+// Cancel a Quote
+cancelQuote: (quoteId, callback) => {
+    const query = `UPDATE Quotes SET status = 'canceled' WHERE quote_id = ?`;
+    db.query(query, [quoteId], callback);
+},
+
+// Negotiate a Quote
+negotiateQuote: (quoteId, negotiationData, callback) => {
+    const query = `
+        UPDATE Quotes
+        SET status = 'counter_proposed', counter_price = ?, client_note = ?
+        WHERE quote_id = ?
+    `;
+    const { counter_price, note } = negotiationData;
+    db.query(query, [counter_price, note, quoteId], callback);
+},
+
+// Accept a Quote
+acceptQuote: (quoteId, callback) => {
+    const query = `UPDATE Quotes SET status = 'agreed' WHERE quote_id = ?`;
+    db.query(query, [quoteId], callback);
+},
 
     // Counter a quote with admin adjustments
     updateQuoteWithCounter: (quoteId, counterData, callback) => {
@@ -116,7 +149,7 @@ const Model = {
         });
     },
 
-    // Fetch all orders with client and quote details
+    // Fetch all orders
     getAllOrders: (callback) => {
         const query = `
             SELECT o.*, q.property_address, c.first_name, c.last_name
