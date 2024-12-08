@@ -2,30 +2,34 @@ const db = require('./db_config');
 
 // Model for interacting with the database
 const Model = {
-    // Fetch all clients
-    getAllClients: (callback) => {
-        const query = 'SELECT * FROM Clients';
-        db.query(query, callback);
+    // Fetch all clients (with optional pagination)
+    getAllClients: (limit = 10, offset = 0, callback) => {
+        const query = 'SELECT * FROM Clients LIMIT ? OFFSET ?';
+        db.query(query, [limit, offset], callback);
     },
 
-    // Add a new client
+    // Add a new client with validation for duplicate email
     addClient: (clientData, callback) => {
         const query = `
             INSERT INTO Clients (first_name, last_name, address, credit_card_info, phone_number, email)
-            VALUES (?, ?, ?, ?, ?, ?)
+            SELECT ?, ?, ?, ?, ?, ?
+            WHERE NOT EXISTS (
+                SELECT 1 FROM Clients WHERE email = ?
+            )
         `;
         const { first_name, last_name, address, credit_card_info, phone_number, email } = clientData;
-        db.query(query, [first_name, last_name, address, credit_card_info, phone_number, email], callback);
+        db.query(query, [first_name, last_name, address, credit_card_info, phone_number, email, email], callback);
     },
 
-    // Fetch all quotes
-    getAllQuotes: (callback) => {
+    // Fetch all quotes with pagination
+    getAllQuotes: (limit = 10, offset = 0, callback) => {
         const query = `
             SELECT q.*, c.first_name AS client_first_name, c.last_name AS client_last_name
             FROM Quotes q
             JOIN Clients c ON q.client_id = c.client_id
+            LIMIT ? OFFSET ?
         `;
-        db.query(query, callback);
+        db.query(query, [limit, offset], callback);
     },
 
     // Fetch quotes by client ID
@@ -74,17 +78,11 @@ const Model = {
         db.query(query, [rejectionNote, quoteId], callback);
     },
 
-    // Cancel a quote
-    cancelQuote: (quoteId, callback) => {
-        const query = `UPDATE Quotes SET status = 'canceled' WHERE quote_id = ?`;
-        db.query(query, [quoteId], callback);
-    },
-
     // Negotiate a quote
     negotiateQuote: (quoteId, negotiationData, callback) => {
         const query = `
             UPDATE Quotes
-            SET status = 'counter_proposed', counter_price = ?, client_note = ?
+            SET status = 'negotiating', counter_price = ?, client_note = ?
             WHERE quote_id = ?
         `;
         const { counter_price, client_note } = negotiationData;
@@ -105,15 +103,16 @@ const Model = {
         });
     },
 
-    // Fetch all orders
-    getAllOrders: (callback) => {
+    // Fetch all orders with pagination
+    getAllOrders: (limit = 10, offset = 0, callback) => {
         const query = `
             SELECT o.*, q.property_address, c.first_name, c.last_name
             FROM Orders o
             JOIN Quotes q ON o.quote_id = q.quote_id
             JOIN Clients c ON q.client_id = c.client_id
+            LIMIT ? OFFSET ?
         `;
-        db.query(query, callback);
+        db.query(query, [limit, offset], callback);
     },
 
     // Generate a new bill
@@ -127,15 +126,16 @@ const Model = {
     },
 
     // Fetch all bills
-    getAllBills: (callback) => {
+    getAllBills: (limit = 10, offset = 0, callback) => {
         const query = `
             SELECT b.*, c.first_name, c.last_name, o.work_start_date, o.work_end_date
             FROM Bills b
             JOIN Orders o ON b.order_id = o.order_id
             JOIN Quotes q ON o.quote_id = q.quote_id
             JOIN Clients c ON q.client_id = c.client_id
+            LIMIT ? OFFSET ?
         `;
-        db.query(query, callback);
+        db.query(query, [limit, offset], callback);
     },
 
     // Pay a bill
@@ -158,7 +158,7 @@ const Model = {
         db.query(query, [clientNote, billId], callback);
     },
 
-    // Run a custom report
+    // Custom reporting query
     runCustomQuery: (query, params, callback) => {
         db.query(query, params, callback);
     },
